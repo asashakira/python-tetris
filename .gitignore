@@ -1,2 +1,3 @@
 .python-version
 .fdignore
+__pycache__/
