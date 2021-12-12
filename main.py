@@ -12,7 +12,7 @@ pygame.display.set_caption("Tetris")
 BLOCK = 30
 
 XBUF = WIN_WIDTH//2 - 150
-YBUF = 20
+YBUF = 200
 
 class Block:
     def __init__(self, color):
@@ -25,7 +25,7 @@ class Block:
         y *= self.height
         x += XBUF
         y += YBUF
-        pygame.draw.rect(WIN, colors.white, (x, y, self.width, self.height))
+        pygame.draw.rect(WIN, colors.white(), (x, y, self.width, self.height))
         pygame.draw.rect(WIN, self.color, (x+1, y+1, self.width-2, self.height-2))
 
 class Tetromino:
@@ -42,18 +42,17 @@ class Tetromino:
                 block.draw(x+j, y+i)
 
 def draw_grid():
-    for i in range(1, 21):
-        color = colors.gray
+    for i in range(21):
+        color = colors.gray()
         start_pos = XBUF, BLOCK*i + YBUF
         end_pos = BLOCK*10 + XBUF, BLOCK*i + YBUF
-        if i == 20: color = colors.white
+        if i == 20: color = colors.white()
         pygame.draw.line(WIN, color, start_pos, end_pos)
-
     for i in range(11):
-        color = colors.gray
+        color = colors.gray()
         start_pos = BLOCK*i + XBUF, YBUF
         end_pos = BLOCK*i + XBUF, BLOCK*20 + YBUF
-        if i == 0 or i == 10: color = colors.white
+        if i == 0 or i == 10: color = colors.white()
         pygame.draw.line(WIN, color, start_pos, end_pos)
 
 def draw_field(field):
@@ -65,7 +64,7 @@ def draw_field(field):
             block.draw(x, y)
 
 def draw(field):
-    WIN.fill(colors.black)
+    WIN.fill(colors.black())
 
     draw_grid()
     #draw_field(field)
