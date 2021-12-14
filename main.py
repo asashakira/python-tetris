@@ -14,6 +14,14 @@ BLOCK = 30
 XBUF = WIN_WIDTH//2 - 150
 YBUF = 200
 
+SPAWN = 3, 19
+
+# play field
+field = [[-1 for j in range(10)] for i in range(40)]
+
+# mino shapes and colors
+minos = tetromino.minos()
+
 class Block:
     def __init__(self, color):
         self.color = color
@@ -27,19 +35,6 @@ class Block:
         y += YBUF
         pygame.draw.rect(WIN, colors.white(), (x, y, self.width, self.height))
         pygame.draw.rect(WIN, self.color, (x+1, y+1, self.width-2, self.height-2))
-
-class Tetromino:
-    def __init__(self, shape, color):
-        self.shape = shape
-        self.color = color
-
-    def draw(self, x, y, r):
-        block = Block(self.color)
-        shape = self.shape[r]
-        for i in range(4):
-            for j in range(4):
-                if shape[i][j] == '.': continue
-                block.draw(x+j, y+i)
 
 def draw_grid():
     for i in range(21):
@@ -55,49 +50,142 @@ def draw_grid():
         if i == 0 or i == 10: color = colors.white()
         pygame.draw.line(WIN, color, start_pos, end_pos)
 
-def draw_field(field):
+def draw_field():
     colors = tetromino.colors()
-    for y in range(20):
+    for y in range(20, 40):
         for x in range(10):
             if field[y][x] == -1: continue;
             block = Block(colors[field[y][x]])
-            block.draw(x, y)
+            block.draw(x, y-20)
 
-def draw(field):
-    WIN.fill(colors.black())
+def draw_mino(now, rot, x, y):
+    colors = tetromino.colors()
+    for i in range(4):
+        for j in range(4):
+            if minos[now][rot][i][j] != 'x': continue
+            block = Block(colors[now])
+            block.draw(x+j, y-20+i)
 
-    draw_grid()
-    #draw_field(field)
+def draw_next_mino(next_mino):
+    block = Block(colors.white())
+    block.draw(0-XBUF, 0)
 
-    pygame.display.update()
+def valid(now, rot, x, y): # collision detection
+    for i in range(4):
+        for j in range(4):
+            if minos[now][rot][i][j] != 'x': continue
+            if y+i < 0 or y+i >= 40 or x+j < 0 or x+j >= 10: return False
+            if field[y+i][x+j] != -1: return False
+    return True
 
 def main():
-    tetro = tetromino.tetromino()
+    now = random.randrange(7)
+    next_mino = random.randrange(7)
+    rot = 0
+    x, y = SPAWN
 
-    # play field
-    field = [[-1 for j in range(10)] for i in range(20)]
-
-    now = 0      # tetromino piece
-    rotation = 0 # mod 4
-    x, y = 3, 0  # current piece's x, y
+    count = 0
+    velocity = 10
+    down = False
 
     run = True
     while run:
-        pygame.time.delay(100)
+        if not valid(now, rot, x, y): run = False
+        pygame.time.delay(30)
+        count += 1
+        down = count == velocity
+        erase = []
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
 
-        for i in range(4):
-            for j in range(4):
-                if tetro[now][rotation][i][j] == 'x':
-                    field[y+i][x+j] = now
+            if event.type == pygame.KEYDOWN:
+                if not valid(now, rot, x, y+1): count = 0
+                for i in range(4):
+                    for j in range(4):
+                        if minos[now][rot][i][j] == 'x':
+                            field[y+i][x+j] = -1
 
-        draw(field)
+                if event.key == pygame.K_LEFT and valid(now, rot, x-1, y):
+                    x -= 1
+                if event.key == pygame.K_RIGHT and valid(now, rot, x+1, y):
+                    x += 1
+                if event.key == pygame.K_DOWN and valid(now, rot, x, y+1):
+                    y += 1
+                if event.key == pygame.K_SPACE:
+                    while valid(now, rot, x, y+1):
+                        y += 1
+                        down = True
+                if event.key == pygame.K_x:
+                    next_rot = (rot+1) % 4
+                    if valid(now, next_rot, x, y):
+                        rot = next_rot
+                    elif now == 0:
+                        continue
+                    elif valid(now, next_rot, x+1, y):
+                        rot = next_rot
+                        x += 1
+                    elif valid(now, next_rot, x-1, y):
+                        rot = next_rot
+                        x -= 1
+                if event.key == pygame.K_z:
+                    next_rot = (rot-1+4) % 4
+                    if valid(now, next_rot, x, y):
+                        rot = next_rot
+                    elif now == 0:
+                        continue
+                    elif valid(now, next_rot, x+1, y):
+                        rot = next_rot
+                        x += 1
+                    elif valid(now, next_rot, x-1, y):
+                        rot = next_rot
+                        x -= 1
 
+        if down:
+            count = 0
+            if valid(now, rot, x, y+1):
+                y += 1
+            else:
+                for dy in range(4):
+                    for dx in range(4):
+                        if minos[now][rot][dy][dx] == 'x':
+                            field[y+dy][x+dx] = now
+
+                for dy in range(4):
+                    line = True
+                    if y+dy < 0 or y+dy >= 40: continue
+                    for nx in range(10):
+                        if field[y+dy][nx] == -1:
+                            line = False
+                    if line: erase.append(y+dy)
+
+                now = next_mino
+                next_mino = random.randrange(7)
+                x, y = SPAWN
+                rot = 0
+
+        for e in erase:
+            for nx in range(10):
+                for ny in range(e, 0, -1):
+                   field[ny][nx] = field[ny-1][nx]
+                field[0][nx] = -1
+
+        WIN.fill(colors.black())
+        draw_grid()
+        draw_field()
+        draw_mino(now, rot, x, y)
+        draw_next_mino(next_mino)
+        pygame.display.update()
+
+    print("GAME OVER")
     pygame.quit()
 
-
 if __name__ == '__main__':
+    print("###########")
+    print("#         #")
+    print("####   ####")
+    print("   #   #   ")
+    print("   #####   ")
     main()
 

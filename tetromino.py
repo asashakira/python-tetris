@@ -1,12 +1,12 @@
-def tetromino():
-    tetromino = [[[[] for k in range(4)] for j in range(4)] for i in range(7)]
+def minos():
+    minos = [[[[] for k in range(4)] for j in range(4)] for i in range(7)]
     with open("ars") as f:
         for i in range(7):
             for j in range(4):
                 for k in range(4):
                     line = f.readline().rstrip()
-                    tetromino[i][j][k] = line
-    return tetromino
+                    minos[i][j][k] = line
+    return minos
 
 def colors(): return [(255, 0, 0), (0, 0, 255), (255, 127, 0), (255, 255, 0), (128, 0, 128), (0, 255, 255), (0, 255, 0)]
 
