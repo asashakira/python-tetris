@@ -14,6 +14,9 @@ BLOCK = 30
 XBUF = WIN_WIDTH//2 - 150
 YBUF = 200
 
+FIELD_HEIGHT = 20
+FIELD_WIDTH = 10
+
 SPAWN = 3, 19
 
 # play field
@@ -37,26 +40,27 @@ class Block:
         pygame.draw.rect(WIN, self.color, (x+1, y+1, self.width-2, self.height-2))
 
 def draw_grid():
-    for i in range(21):
+    for i in range(FIELD_HEIGHT+1):
         color = colors.gray()
         start_pos = XBUF, BLOCK*i + YBUF
-        end_pos = BLOCK*10 + XBUF, BLOCK*i + YBUF
-        if i == 20: color = colors.white()
+        end_pos = BLOCK*FIELD_WIDTH + XBUF, BLOCK*i + YBUF
+        if i == FIELD_HEIGHT: color = colors.white()
         pygame.draw.line(WIN, color, start_pos, end_pos)
-    for i in range(11):
+
+    for i in range(FIELD_WIDTH+1):
         color = colors.gray()
         start_pos = BLOCK*i + XBUF, YBUF
-        end_pos = BLOCK*i + XBUF, BLOCK*20 + YBUF
-        if i == 0 or i == 10: color = colors.white()
+        end_pos = BLOCK*i + XBUF, BLOCK*FIELD_HEIGHT + YBUF
+        if i == 0 or i == FIELD_WIDTH: color = colors.white()
         pygame.draw.line(WIN, color, start_pos, end_pos)
 
 def draw_field():
     colors = tetromino.colors()
-    for y in range(20, 40):
-        for x in range(10):
+    for y in range(FIELD_HEIGHT, 2*FIELD_HEIGHT):
+        for x in range(FIELD_WIDTH):
             if field[y][x] == -1: continue;
             block = Block(colors[field[y][x]])
-            block.draw(x, y-20)
+            block.draw(x, y-FIELD_HEIGHT)
 
 def draw_mino(now, rot, x, y):
     colors = tetromino.colors()
@@ -64,11 +68,12 @@ def draw_mino(now, rot, x, y):
         for j in range(4):
             if minos[now][rot][i][j] != 'x': continue
             block = Block(colors[now])
-            block.draw(x+j, y-20+i)
+            block.draw(x+j, y+i-FIELD_HEIGHT)
 
-def draw_next_mino(next_mino):
-    block = Block(colors.white())
-    block.draw(0-XBUF, 0)
+def draw_next_mino(nxt):
+    tetromino.colors()
+    block = Block(colors[nxt])
+    block.draw(0-2, 0)
 
 def valid(now, rot, x, y): # collision detection
     for i in range(4):
@@ -80,7 +85,7 @@ def valid(now, rot, x, y): # collision detection
 
 def main():
     now = random.randrange(7)
-    next_mino = random.randrange(7)
+    nxt = random.randrange(7)
     rot = 0
     x, y = SPAWN
 
@@ -160,8 +165,8 @@ def main():
                             line = False
                     if line: erase.append(y+dy)
 
-                now = next_mino
-                next_mino = random.randrange(7)
+                now = nxt
+                nxt = random.randrange(7)
                 x, y = SPAWN
                 rot = 0
 
@@ -175,7 +180,6 @@ def main():
         draw_grid()
         draw_field()
         draw_mino(now, rot, x, y)
-        draw_next_mino(next_mino)
         pygame.display.update()
 
     print("GAME OVER")
