@@ -4,6 +4,7 @@ import tetromino
 import colors
 
 pygame.init()
+
 WIN_WIDTH = 800
 WIN_HEIGHT = 1000
 WIN = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
@@ -90,13 +91,16 @@ def main():
     x, y = SPAWN
 
     count = 0
-    velocity = 10
+    velocity = 30
     down = False
+
+    clock = pygame.time.Clock()
 
     run = True
     while run:
+        clock.tick(60)
+
         if not valid(now, rot, x, y): run = False
-        pygame.time.delay(30)
         count += 1
         down = count == velocity
         erase = []
