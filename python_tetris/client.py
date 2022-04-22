@@ -1,6 +1,6 @@
 import pygame
-from tetris import Tetris
-from network import Network
+
+from .network import Network
 
 pygame.init()
 
@@ -10,11 +10,13 @@ HEIGHT = 1000
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
 
+
 def draw(p1, p2):
-    WIN.fill((0,0,0))
+    WIN.fill((0, 0, 0))
     p1.draw(WIN)
     p2.draw(WIN)
     pygame.display.update()
+
 
 def main():
     n = Network()
@@ -27,7 +29,8 @@ def main():
     run = True
     while run:
         clock.tick(60)
-        if not p1.valid(): run = False
+        if not p1.valid():
+            run = False
         p1.count += 1
         p1.down = p1.count == velocity
 
@@ -42,5 +45,6 @@ def main():
         draw(p1, p2)
 
     pygame.quit()
+
 
 main()
