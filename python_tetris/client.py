@@ -1,3 +1,5 @@
+from typing import Any
+
 import pygame
 
 from .network import Network
@@ -11,14 +13,14 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tetris")
 
 
-def draw(p1, p2):
+def draw(p1: Any, p2: Any) -> None:
     WIN.fill((0, 0, 0))
     p1.draw(WIN)
     p2.draw(WIN)
     pygame.display.update()
 
 
-def main():
+def main() -> None:
     n = Network()
     p1 = n.get_p()
 
@@ -26,17 +28,16 @@ def main():
 
     clock = pygame.time.Clock()
 
-    run = True
-    while run:
+    while True:
         clock.tick(60)
-        if not p1.valid():
-            run = False
+        if p1 is None or p1.valid() is None:
+            break
         p1.count += 1
         p1.down = p1.count == velocity
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                break
             if event.type == pygame.KEYDOWN:
                 p1.move()
 
@@ -47,4 +48,5 @@ def main():
     pygame.quit()
 
 
-main()
+if __name__ == "__main__":
+    main()

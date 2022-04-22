@@ -1,9 +1,11 @@
+from __future__ import annotations
+
 import random
 
 import pygame
 
-from .colors import BLACK, GRAY, WHITE
-from .tetromino import COLORS, minos
+from .colors import BLACK, COLORS, GRAY, WHITE
+from .tetromino import minos
 
 pygame.init()
 
@@ -30,12 +32,12 @@ MINOS = minos()
 
 
 class Block:
-    def __init__(self, color) -> None:
+    def __init__(self, color: tuple[int, int, int]) -> None:
         self.color = color
         self.width = BLOCK
         self.height = BLOCK
 
-    def draw(self, x, y):
+    def draw(self, x: int, y: int) -> None:
         x *= self.width
         y *= self.height
         x += XBUF
@@ -46,7 +48,7 @@ class Block:
         )
 
 
-def draw_grid():
+def draw_grid() -> None:
     for i in range(FIELD_HEIGHT + 1):
         color = GRAY
         start_pos = XBUF, BLOCK * i + YBUF
@@ -64,8 +66,8 @@ def draw_grid():
         pygame.draw.line(WIN, color, start_pos, end_pos)
 
 
-def draw_field():
-    colors = COLORS()
+def draw_field() -> None:
+    colors = COLORS
     for y in range(FIELD_HEIGHT, 2 * FIELD_HEIGHT):
         for x in range(FIELD_WIDTH):
             if field[y][x] == -1:
@@ -74,8 +76,8 @@ def draw_field():
             block.draw(x, y - FIELD_HEIGHT)
 
 
-def draw_mino(now, rot, x, y):
-    colors = COLORS()
+def draw_mino(now: int, rot: int, x: int, y: int) -> None:
+    colors = COLORS
     for i in range(4):
         for j in range(4):
             if MINOS[now][rot][i][j] != "x":
@@ -84,13 +86,13 @@ def draw_mino(now, rot, x, y):
             block.draw(x + j, y + i - FIELD_HEIGHT)
 
 
-def draw_next_mino(nxt):
-    colors = COLORS()
+def draw_next_mino(nxt: int) -> None:
+    colors = COLORS
     block = Block(colors[nxt])
     block.draw(0 - 2, 0)
 
 
-def valid(now, rot, x, y):  # collision detection
+def valid(now: int, rot: int, x: int, y: int) -> bool:  # collision detection
     for i in range(4):
         for j in range(4):
             if MINOS[now][rot][i][j] != "x":
@@ -102,7 +104,7 @@ def valid(now, rot, x, y):  # collision detection
     return True
 
 
-def main():
+def _main() -> None:
     now = random.randrange(7)
     nxt = random.randrange(7)
     rot = 0
@@ -212,10 +214,14 @@ def main():
     pygame.quit()
 
 
-if __name__ == "__main__":
+def main() -> None:
     print("###########")
     print("#         #")
     print("####   ####")
     print("   #   #   ")
     print("   #####   ")
+    _main()
+
+
+if __name__ == "__main__":
     main()

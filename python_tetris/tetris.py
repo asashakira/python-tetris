@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import pygame
 
-from .colors import GRAY, WHITE
-from .tetromino import COLORS, minos
+from .colors import COLORS, GRAY, WHITE
+from .tetromino import minos
 
 UNIT = 30
 
@@ -17,12 +19,14 @@ MINOS = minos()
 
 
 class Block:
-    def __init__(self, playfield_x, playfield_y, color):
+    def __init__(
+        self, playfield_x: int, playfield_y: int, color: tuple[int, int, int]
+    ) -> None:
         self.color = color
         self.playfield_x = playfield_x
         self.playfield_y = playfield_y
 
-    def draw(self, win, x, y):
+    def draw(self, win: pygame.Surface, x: int, y: int) -> None:
         x = x * UNIT + self.playfield_x
         y = y * UNIT + self.playfield_y
         pygame.draw.rect(win, WHITE, (x, y, UNIT, UNIT))
@@ -30,7 +34,7 @@ class Block:
 
 
 class Tetris:
-    def __init__(self, gamefield_x, gamefield_y):
+    def __init__(self, gamefield_x: int, gamefield_y: int) -> None:
         self.x, self.y = SPAWN
         self.rot = 0
         self.now = 0
@@ -40,15 +44,17 @@ class Tetris:
 
         self.field = [[-1 for j in range(FIELD_WIDTH)] for i in range(2 * FIELD_HEIGHT)]
 
-        # self.holdfield_x = gamefield_x
-        # self.holdfield_y = gamefield_y + UNIT
-        # self.playfield_x = gamefield_x + HOLD_SIZE*UNIT + UNIT
+        self.holdfield_x = gamefield_x
+        self.holdfield_y = gamefield_y + UNIT
+        self.playfield_x = gamefield_x + HOLD_SIZE * UNIT + UNIT
         self.playfield_x = gamefield_x + UNIT
         self.playfield_y = gamefield_y
         self.nextfield_x = self.playfield_x + FIELD_WIDTH * UNIT + UNIT
         self.nextfield_y = gamefield_y + UNIT
 
-    def valid(self, drot=0, dx=0, dy=0):  # collision detection
+    def valid(
+        self, drot: int = 0, dx: int = 0, dy: int = 0
+    ) -> bool:  # collision detection
         x = self.x + dx
         y = self.y + dy
         rot = (self.rot + drot + 4) % 4
@@ -62,7 +68,7 @@ class Tetris:
                     return False
         return True
 
-    def move(self):
+    def move(self) -> None:
         keys = pygame.key.get_pressed()
         for i in range(4):
             for j in range(4):
@@ -102,7 +108,7 @@ class Tetris:
                     self.rot = next_rot
                     self.x -= 1
 
-    def move_down(self):
+    def move_down(self) -> None:
         erase = []
         if self.down:
             self.count = 0
@@ -135,15 +141,15 @@ class Tetris:
                     self.field[ny][nx] = self.field[ny - 1][nx]
                 self.field[0][nx] = -1
 
-    def draw(self, win):
+    def draw(self, win: pygame.Surface) -> None:
         self.draw_grid(win)
         self.draw_field(win)
         self.draw_mino(win)
         # self.draw_hold(win)
         # self.draw_next(win)
 
-    def draw_field(self, win):
-        colors = COLORS()
+    def draw_field(self, win: pygame.Surface) -> None:
+        colors = COLORS
         for y in range(FIELD_HEIGHT, 2 * FIELD_HEIGHT):
             for x in range(FIELD_WIDTH):
                 if self.field[y][x] == -1:
@@ -153,16 +159,16 @@ class Tetris:
                 )
                 block.draw(win, x, y - FIELD_HEIGHT)
 
-    def draw_mino(self, win):
-        colors = COLORS()
+    def draw_mino(self, win: pygame.Surface) -> None:
+        colors = COLORS
         for i in range(4):
             for j in range(4):
-                if minos[self.now][self.rot][i][j] != "x":
+                if MINOS[self.now][self.rot][i][j] != "x":
                     continue
                 block = Block(self.playfield_x, self.playfield_y, colors[self.now])
                 block.draw(win, self.x + j, self.y + i - FIELD_HEIGHT)
 
-    def draw_hold(self, win):
+    def draw_hold(self, win: pygame.Surface) -> None:
         for i in range(HOLD_SIZE + 1):
             color = GRAY
             start = self.holdfield_x, UNIT * i + self.holdfield_y
@@ -179,7 +185,7 @@ class Tetris:
                 color = WHITE
             pygame.draw.line(win, color, start, end)
 
-    def draw_grid(self, win):
+    def draw_grid(self, win: pygame.Surface) -> None:
         for i in range(FIELD_HEIGHT + 1):
             color = GRAY
             start = self.playfield_x, UNIT * i + self.playfield_y
@@ -196,7 +202,7 @@ class Tetris:
                 color = WHITE
             pygame.draw.line(win, color, start, end)
 
-    def draw_next(self, win):
+    def draw_next(self, win: pygame.Surface) -> None:
         for i in range(NEXT_SIZE + 1):
             color = GRAY
             start = self.nextfield_x, UNIT * i + self.nextfield_y
