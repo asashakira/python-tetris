@@ -3,7 +3,7 @@
 ## Installation
 
 ```sh
-pip install git+https://github.com/asashakira/python-tetirs
+pip install git+https://github.com/asashakira/python-tetris
 ```
 
 ## How to play
