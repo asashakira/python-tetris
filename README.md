@@ -1,5 +1,7 @@
 # tetris
 
+[![Maintainability](https://api.codeclimate.com/v1/badges/3a38ff6b4c864b6f1569/maintainability)](https://codeclimate.com/github/asashakira/python-tetris/maintainability)
+
 ## Installation
 
 ```sh
