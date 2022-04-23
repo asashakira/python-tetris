@@ -2,7 +2,7 @@
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/3a38ff6b4c864b6f1569/maintainability)](https://codeclimate.com/github/asashakira/python-tetris/maintainability)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asashakira/python-tetris/mucho.svg)](https://results.pre-commit.ci/latest/github/asashakira/python-tetris/mucho)
-![PyPI](https://img.shields.io/pypi/v/python-tetris?color=blue)
+[![PyPI](https://img.shields.io/pypi/v/python-tetris?color=blue)](https://pypi.org/project/python-tetris/)
 
 ## Installation
 
