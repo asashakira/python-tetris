@@ -1,6 +1,8 @@
 # tetris
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/3a38ff6b4c864b6f1569/maintainability)](https://codeclimate.com/github/asashakira/python-tetris/maintainability)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/asashakira/python-tetris/mucho.svg)](https://results.pre-commit.ci/latest/github/asashakira/python-tetris/mucho)
+
 
 ## Installation
 
