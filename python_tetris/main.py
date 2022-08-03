@@ -21,34 +21,37 @@ def draw(tetris) -> None:
     pygame.display.update()
 
 
+def run(tetris) -> bool:
+    tetris.count += 1
+    tetris.down = tetris.count == tetris.velocity
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            tetris.run = False
+
+        if event.type == pygame.KEYDOWN:
+            tetris.move()
+
+    # move tetris piece down
+    tetris.move_down()
+
+    if tetris.valid() is False:
+        return False
+
+    if tetris.run is False:
+        return False
+
+    # draw to window
+    draw(tetris)
+
+    return True
+
+
 def main() -> None:
-    tetris = Tetris(200, 200)
-    velocity = 30
+    tetris = Tetris(200, 200, velocity=30)
     clock = pygame.time.Clock()
 
-    run = True
-    while run:
+    while run(tetris):
         clock.tick(60)
-
-        tetris.count += 1
-        tetris.down = tetris.count == velocity
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-
-            if event.type == pygame.KEYDOWN:
-                tetris.move()
-
-        tetris.move_down()
-
-        if tetris.valid() is False:
-            break
-
-        if run is False:
-            break
-
-        draw(tetris)
 
     print("GAME OVER")
     pygame.quit()

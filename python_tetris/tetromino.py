@@ -1,24 +1,29 @@
+""" get tetromino pieces from ars file """
+
 from __future__ import annotations
 
 import pkg_resources
 
 
-def minos() -> list[list[list[str]]]:
-    minos_: list[list[list[str]]] = [
-        [["" for k in range(4)] for j in range(4)] for i in range(7)
+def get_minos() -> list[list[list[str]]]:
+    minos: list[list[list[str]]] = [
+        [["" for _ in range(4)] for _ in range(4)] for _ in range(7)
     ]
-    with open(pkg_resources.resource_filename(__name__, "ars")) as f:
+    with open(pkg_resources.resource_filename(__name__, "ars"), encoding="utf-8") as f:
         for i in range(7):
             for j in range(4):
                 for k in range(4):
                     line = f.readline().rstrip()
-                    minos_[i][j][k] = line
-    return minos_
+                    minos[i][j][k] = line
+    return minos
 
 
-if __name__ == "__main__":
-    s = minos()
+def main():
+    s = get_minos()
     for j in range(4):
         for k in range(4):
             print(s[1][j][k])
-    pass
+
+
+if __name__ == "__main__":
+    main()
