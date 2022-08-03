@@ -1,3 +1,5 @@
+""" all the Tets"""
+
 from __future__ import annotations
 
 import pygame
@@ -19,6 +21,8 @@ MINOS = minos()
 
 
 class Block:
+    """Block class that represents a single 'block'"""
+
     def __init__(
         self, playfield_x: int, playfield_y: int, color: tuple[int, int, int]
     ) -> None:
@@ -34,6 +38,8 @@ class Block:
 
 
 class Tetris:
+    """Tetris class"""
+
     def __init__(self, gamefield_x: int, gamefield_y: int) -> None:
         self.x, self.y = SPAWN
         self.rot = 0
@@ -42,7 +48,7 @@ class Tetris:
         self.down = True
         self.count = 0
 
-        self.field = [[-1 for j in range(FIELD_WIDTH)] for i in range(2 * FIELD_HEIGHT)]
+        self.field = [[-1 for _ in range(FIELD_WIDTH)] for _ in range(2 * FIELD_HEIGHT)]
 
         self.holdfield_x = gamefield_x
         self.holdfield_y = gamefield_y + UNIT
@@ -79,12 +85,18 @@ class Tetris:
             self.x -= 1
         if keys[pygame.K_RIGHT] and self.valid(dx=1):
             self.x += 1
+
+        # soft drop
         if keys[pygame.K_DOWN] and self.valid(dy=1):
             self.y += 1
+
+        # hard drop
         if keys[pygame.K_SPACE]:
             while self.valid(dy=1):
                 self.y += 1
                 self.down = True
+
+        # rotates clockwise
         if keys[pygame.K_x]:
             next_rot = (self.rot + 1) % 4
             if self.valid(drot=1):
@@ -96,6 +108,8 @@ class Tetris:
                 elif self.valid(drot=1, dx=1):
                     self.rot = next_rot
                     self.x -= 1
+
+        # rotates counter clockwise
         if keys[pygame.K_z]:
             next_rot = (self.rot - 1 + 4) % 4
             if self.valid(drot=-1):
@@ -173,7 +187,7 @@ class Tetris:
             color = GRAY
             start = self.holdfield_x, UNIT * i + self.holdfield_y
             end = UNIT * HOLD_SIZE + self.holdfield_x, UNIT * i + self.holdfield_y
-            if i == 0 or i == HOLD_SIZE:
+            if i in (0, HOLD_SIZE):
                 color = WHITE
             pygame.draw.line(win, color, start, end)
 
@@ -181,7 +195,7 @@ class Tetris:
             color = GRAY
             start = self.holdfield_x + UNIT * i, self.holdfield_y
             end = UNIT * i + self.holdfield_x, UNIT * HOLD_SIZE + self.holdfield_y
-            if i == 0 or i == HOLD_SIZE:
+            if i in (0, HOLD_SIZE):
                 color = WHITE
             pygame.draw.line(win, color, start, end)
 
@@ -198,7 +212,7 @@ class Tetris:
             color = GRAY
             start = self.playfield_x + UNIT * i, self.playfield_y
             end = UNIT * i + self.playfield_x, UNIT * FIELD_HEIGHT + self.playfield_y
-            if i == 0 or i == FIELD_WIDTH:
+            if i in (0, FIELD_WIDTH):
                 color = WHITE
             pygame.draw.line(win, color, start, end)
 
@@ -207,7 +221,7 @@ class Tetris:
             color = GRAY
             start = self.nextfield_x, UNIT * i + self.nextfield_y
             end = UNIT * NEXT_SIZE + self.nextfield_x, UNIT * i + self.nextfield_y
-            if i == 0 or i == NEXT_SIZE:
+            if i in (0, NEXT_SIZE):
                 color = WHITE
             pygame.draw.line(win, color, start, end)
 
@@ -215,6 +229,6 @@ class Tetris:
             color = GRAY
             start = self.nextfield_x + UNIT * i, self.nextfield_y
             end = UNIT * i + self.nextfield_x, UNIT * NEXT_SIZE + self.nextfield_y
-            if i == 0 or i == NEXT_SIZE:
+            if i in (0, NEXT_SIZE):
                 color = WHITE
             pygame.draw.line(win, color, start, end)
