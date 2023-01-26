@@ -12,11 +12,11 @@ py-tetris-client = "python_tetris.client:main"
 [tool.poetry.dependencies]
 python = "^3.10"
 pygame = "^2.1.2"
-pre-commit = "^2.20.0"
+pre-commit = "^3.0.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.12.0"
-pre-commit = "^2.20.0"
+pre-commit = "^3.0.0"
 pylint = "^2.15.10"
 
 [build-system]
