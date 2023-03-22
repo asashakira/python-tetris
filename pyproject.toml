@@ -11,7 +11,7 @@ py-tetris-client = "python_tetris.client:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pygame = "^2.1.2"
+pygame = "^2.3.0"
 pre-commit = "^3.2.0"
 
 [tool.poetry.dev-dependencies]
